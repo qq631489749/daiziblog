@@ -12,6 +12,9 @@ function Listener (triggertodo) {
 	this.triggertodo = triggertodo;
 }
 
+Listener.prototype.canelListen = function (eventCenter, eventType) {
+	eventCenter.remove(eventType, this);
+}
 
 //事件处理中心
 var EventCenter = (function() {
