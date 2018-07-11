@@ -1,3 +1,6 @@
+//这个方法在职责链模式和装饰者模式都有用到，但他们的意图是不一样的
+//职责链模式中，after扮演的是指定下一个职责链，并用闭包存起来
+//而装饰者模式中，也是用闭包把之前的方法装饰完之后，赋值给一个函数
 Function.prototype.after = function (fn) {
     var _self = this;
     return function () {

@@ -12,8 +12,14 @@ function Listener (triggertodo) {
 	this.triggertodo = triggertodo;
 }
 
+//去事件处理中心取消订阅
 Listener.prototype.canelListen = function (eventCenter, eventType) {
 	eventCenter.remove(eventType, this);
+}
+
+//去事件处理中心订阅
+Listener.prototype.subscribe = function (eventCenter, eventType) {
+	eventCenter.listen(eventType, this);
 }
 
 //事件处理中心
@@ -43,21 +49,24 @@ var EventCenter = (function() {
 			}
 			return console.log('订阅不存在！')
 		},
-		//发布
-		trigger: function (event) {
-			if (!cache[event]) {
+		//发布，第一个参数要传入订阅的参数
+		trigger: function () {
+			if (arguments.length === 0) {
+				return console.log('请传入要发布的事件！')
+			}
+			var eventType = [].shift.call(arguments);
+			if (!cache[eventType]) {
 				return console.log('没有该事件！');
 			}
 
-			for (var i = 0, l = cache[event].length, listener; i < l; i++) {
-				listener = cache[event][i];
+			for (var i = 0, l = cache[eventType].length, listener; i < l; i++) {
+				listener = cache[eventType][i];
 				//通知订阅者去干一些事情，虽然不知道是什么事情
-				listener.triggertodo();
+				listener.triggertodo(arguments);
 			}
 		}
 	}
 })()
-
 
 //新建一个要租一栋别墅的打工仔
 var l = new Listener(function () {
@@ -66,8 +75,9 @@ var l = new Listener(function () {
 
 var p = new Publisher()
 
-EventCenter.listen('600bieshu', l);
-EventCenter.remove('600bieshu', l);
+l.subscribe(EventCenter, '600bieshu')
+l.canelListen(EventCenter, '600bieshu');
+
 p.publish(EventCenter, '600bieshu')
 
 
@@ -224,9 +234,3 @@ Event.create('namespace1').listen('data', function () {
 })
 
 Event.trigger('data')
-
-var c = (function () {
-	c = function () {
-
-	}
-})()
